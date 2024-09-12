@@ -1,0 +1,17 @@
+{
+  "name": "chat-online",
+  "version": "1.0.0",
+  "description": "Aplicacion de chat en vivo hecha desde el backend + websocket. Desplegada en Glitch",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0",
+    "express-handlebars": "^8.0.1",
+    "socket.io": "^4.7.5"
+  }
+}
