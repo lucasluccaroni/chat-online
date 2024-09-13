@@ -1,12 +1,14 @@
 <main>
 
-    <h1> Bienvenidos al Live-Chat! </h1>
+    <h1> ¡Bienvenidos al Live-Chat! </h1>
 
     <div>
-        <input type="text" id="chatBox">
+        <textarea rows="1" placeholder="Escribe tu mensaje..." id="chatBox"></textarea>
+        <div id="hiddenDiv" style="display: none;" ></div>
+        <button> Enviar </button>
     </div>
 
-    <div>
+    <div id="historyBox">
         <p id="messageLogs"></p>
     </div>
 

@@ -8,6 +8,9 @@ router.get("/", (_, res) => {
         useSweetAlert: true,
         scripts: [
             "index.js"
+        ],
+        styles: [
+            "index.css"
         ]
     })
 })

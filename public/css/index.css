@@ -1,0 +1,39 @@
+body {
+    background-image: url("/background-image.jpg");
+    background-size: cover;
+}
+
+
+
+#historyBox {
+    border: solid white;
+    height: 80vh;
+    width: 80vw;
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+p{
+    font-size: large;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+#chatBox{
+    width: 50%;
+    overflow: hidden;
+    resize: none;
+    box-sizing: border-box;
+}
+#hiddenDiv {
+    white-space: pre-wrap; /* Mantiene los saltos de línea */
+    word-wrap: break-word; /* Ajusta las palabras largas */
+    visibility: hidden; /* Oculta el div */
+}
+
+
+
+
+
+
