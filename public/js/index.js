@@ -2,23 +2,16 @@
 const socket = io()
 let username
 const messageLogs = document.getElementById("messageLogs")
-
 let chatBox = document.getElementById("chatBox")
-const hiddenDiv = document.getElementById("hiddenDiv")
 
-
-// expansion del chatBox a medida que escribo texto
-chatBox.addEventListener("input", () => {
-    hiddenDiv.style.display = 'block';
-    hiddenDiv.style.width = chatBox.offsetWidth + 'px';
-    hiddenDiv.textContent = chatBox.value + '\u200b'; // Añade un espacio en blanco para asegurar el ajuste de altura
-    textarea.style.height = hiddenDiv.scrollHeight + 'px';
-    hiddenDiv.style.display = 'none';
-});
-hiddenDiv.style.width = chatBox.offsetWidth + 'px';
-hiddenDiv.textContent = chatBox.value + '\u200b';
-textarea.style.height = hiddenDiv.scrollHeight + 'px';
-
+let ahora = new Date()
+const fechaFormateada = ahora.toLocaleString("es-AR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+})
 
 // bloquear pantalla del usuario y pedirle username
 Swal.fire({
@@ -59,7 +52,7 @@ chatBox.addEventListener("keyup", e => {
         let text = chatBox.value
 
         if (text.trim().length > 0) {
-            socket.emit("message", { username, text })
+            socket.emit("message", { username, text, fechaFormateada })
             chatBox.value = ""
         }
     }
@@ -67,8 +60,8 @@ chatBox.addEventListener("keyup", e => {
 
 // escuchar los mensajes desde el servidor y mostrarlos
 socket.on("message", (data) => {
-    const { username, text} = data
-    messageLogs.innerHTML += `${username} dice: ${text} </br>`
+    const { username, text, fechaFormateada} = data
+    messageLogs.innerHTML += `${fechaFormateada} - ${username} : ${text} </br>`
 })
 
 // envia un toast a todos los demas usuarios avisando que uno nuevo se unio al chat

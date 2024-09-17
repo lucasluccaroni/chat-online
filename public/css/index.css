@@ -3,8 +3,6 @@ body {
     background-size: cover;
 }
 
-
-
 #historyBox {
     border: solid white;
     height: 80vh;
@@ -15,25 +13,20 @@ body {
     word-wrap: break-word;
 }
 
-p{
+p {
     font-size: large;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: 'Times New Roman', Times, serif;
 }
 
-#chatBox{
+#chatBox {
     width: 50%;
     overflow: hidden;
     resize: none;
     box-sizing: border-box;
 }
-#hiddenDiv {
-    white-space: pre-wrap; /* Mantiene los saltos de línea */
-    word-wrap: break-word; /* Ajusta las palabras largas */
-    visibility: hidden; /* Oculta el div */
+
+h1{
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+    font-style: italic;
 }
-
-
-
-
-
-
