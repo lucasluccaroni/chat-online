@@ -47,6 +47,7 @@ io.on("connection", (clientSocket) => {
     clientSocket.on("message", (data) => {
         // Cada vez que se manda un mensaje se pushea la informacion al array
         historialDeMensajes.push(data)
+        console.log(historialDeMensajes)
 
         io.emit("message", data)
     })
