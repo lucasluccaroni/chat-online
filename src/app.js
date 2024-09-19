@@ -1,7 +1,15 @@
+//imports
 const express = require("express")
 const handlebars = require("express-handlebars")
+const mongoose = require("mongoose")
 const { Server } = require("socket.io")
+const { port, mongoUri, dbName } = require("./config")
 
+// instancia de clase de la DB
+const { LogsDAO } = require("./dao/logs.dao")
+const logsDao = new LogsDAO()
+
+// app de express
 const app = express()
 
 // permitir el envio de informacion mediante formularios y JSON
@@ -20,35 +28,52 @@ app.use(express.static(`${__dirname}/../public`))
 const viewsRouter = require("./routes/views.router")
 app.use("/", viewsRouter)
 
-// listener del puerto
-const httpServer = app.listen(8080, () => {
-    console.log(`Servidor del chat prendido. puerto 8080`)
-})
 
-const io = new Server(httpServer)
+const main = async () => {
 
-// Esto guarda el historial de mensajes en memoria. Habria que hacerlo en una DB
-const historialDeMensajes = []
+    // conexion a la db
+    await mongoose.connect(mongoUri, { dbName })
 
-io.on("connection", (clientSocket) => {
-    console.log(`Nuevo cliente conectado => ${clientSocket.id}`)
-
-    // Le envia al nuevo cliente conectado todos los mensajes mandados hasta el momento MIN56 ver como mejorarlo.
-    for(const data of historialDeMensajes) {
-        clientSocket.emit("message", data)
-    }
-
-    clientSocket.on("new-user-connected", (username) => {
-        //notificar a los demas usuarios que uno nuevo se conecto
-        clientSocket.broadcast.emit("user-joined-chat", username)
+    // listener del puerto
+    const httpServer = app.listen(port, () => {
+        console.log(`Servidor del chat prendido. puerto ${port}`)
     })
 
+    const io = new Server(httpServer)
 
-    clientSocket.on("message", (data) => {
-        // Cada vez que se manda un mensaje se pushea la informacion al array
-        historialDeMensajes.push(data)
-        console.log(historialDeMensajes)
+    // Esto guarda el historial de mensajes en memoria. Habria que hacerlo en una DB
+    const historialDeMensajes = []
 
-        io.emit("message", data)
+
+    io.on("connection", (clientSocket) => {
+        console.log(`Nuevo cliente conectado => ${clientSocket.id}`)
+
+        // Le envia al nuevo cliente conectado todos los mensajes mandados hasta el momento MIN56 ver como mejorarlo.
+        for (const data of historialDeMensajes) {
+            clientSocket.emit("message", data)
+        }
+
+        clientSocket.on("new-user-connected", (username) => {
+            //notificar a los demas usuarios que uno nuevo se conecto
+            clientSocket.broadcast.emit("user-joined-chat", username)
+        })
+
+
+        clientSocket.on("message", async (data) => {
+
+            // Cada vez que se manda un mensaje se pushea la informacion al array
+
+            try{
+                const { username, text, fechaFormateada } = data
+                await logsDao.addLog(fechaFormateada, username, text)
+                io.emit("message", data)
+            }
+            catch(err) {
+                console.log("Error al subir chats en DB => ", err)
+            }
+
+        })
     })
-})
+}
+
+main()
