@@ -9,6 +9,9 @@ const { port, mongoUri, dbName } = require("./config")
 const { LogsDAO } = require("./dao/logs.dao")
 const logsDao = new LogsDAO()
 
+// instancia del DTO
+const { LogsDTO } = require("./dto/logs.dto")
+
 // app de express
 const app = express()
 
@@ -41,17 +44,18 @@ const main = async () => {
 
     const io = new Server(httpServer)
 
-    // Esto guarda el historial de mensajes en memoria.
-    const historialDeMensajes = []
-
-    io.on("connection", (clientSocket) => {
+    io.on("connection", async (clientSocket) => {
         console.log(`Nuevo cliente conectado => ${clientSocket.id}`)
 
-        //TODO:
-        // Le envia al nuevo cliente conectado todos los mensajes mandados hasta el momento MIN56 ver como mejorarlo.
-        for (const data of historialDeMensajes) {
-            clientSocket.emit("message", data)
-        }
+
+        // Le envia al nuevo cliente conectado todos los mensajes mandados hasta el momento MIN56 ver como mejorarlo.       
+        const allLogs = await logsDao.getAllLogs()
+        let messagesHistory = allLogs.map(log => {
+            const logsDto = new LogsDTO(log)
+            const transformation = logsDto.transform()
+            return transformation
+        })
+        clientSocket.emit("init-messages", messagesHistory)
 
         clientSocket.on("new-user-connected", (username) => {
             //notificar a los demas usuarios que uno nuevo se conecto

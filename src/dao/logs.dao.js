@@ -9,11 +9,22 @@ class LogsDAO {
                 user: user,
                 message: message
             }
-
             await LogsModel.create(newLog)
         }
         catch (err) {
-            console.log("Error en Logs DAO añadiendo un log", err)
+            console.log("Error en LogsDAO - addLog => ", err)
+            return null
+        }
+    }
+
+    async getAllLogs() {
+        try {
+            const allLogs = await LogsModel.find()
+            const result = allLogs.map(log => log.toObject())
+            return result
+        }
+        catch (err) {
+            console.log("Error en LogsDAO - getAllLogs => ", err)
             return null
         }
     }

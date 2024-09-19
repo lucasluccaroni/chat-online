@@ -3,6 +3,7 @@ const socket = io()
 let username
 const messageLogs = document.getElementById("messageLogs")
 let chatBox = document.getElementById("chatBox")
+const sendButton = document.getElementById("sendButton")
 
 let ahora = new Date()
 const fechaFormateada = ahora.toLocaleString("es-AR", {
@@ -58,14 +59,34 @@ chatBox.addEventListener("keyup", e => {
     }
 })
 
+// escuchar el boton "enviar" y enviar el mensaje al chat
+sendButton.addEventListener("click", e => {
+    e.preventDefault()
+    let text = chatBox.value
+
+    if (text.trim().length > 0) {
+        socket.emit("message", { username, text, fechaFormateada })
+        chatBox.value = ""
+    }
+})
+
+
 // escuchar los mensajes desde el servidor y mostrarlos
 socket.on("message", (data) => {
-    const { username, text, fechaFormateada} = data
-    messageLogs.innerHTML += `${fechaFormateada} - ${username} : ${text} </br>`
+    const { username, text, fechaFormateada } = data
+    messageLogs.innerHTML += `${fechaFormateada} -- ${username} : ${text} </br>`
+})
+
+// escuchar el historial de mensajes e imprimirlo en pantalla
+socket.on("init-messages", (messagesHistory) => {
+    messagesHistory.forEach(log => {
+        const { date, user, message } = log
+        messageLogs.innerHTML += `${date} -- ${user} : ${message} </br>`
+    });
 })
 
 // envia un toast a todos los demas usuarios avisando que uno nuevo se unio al chat
-socket.on("user-joined-chat", username =>{
+socket.on("user-joined-chat", username => {
     const Toast = Swal.mixin({
         toast: true,
         position: "top-end",
