@@ -5,7 +5,7 @@ const mongoose = require("mongoose")
 const { Server } = require("socket.io")
 const { port, mongoUri, dbName } = require("./config")
 
-// instancia de clase de la DB
+// instancia de class de la DB
 const { LogsDAO } = require("./dao/logs.dao")
 const logsDao = new LogsDAO()
 
@@ -41,13 +41,13 @@ const main = async () => {
 
     const io = new Server(httpServer)
 
-    // Esto guarda el historial de mensajes en memoria. Habria que hacerlo en una DB
+    // Esto guarda el historial de mensajes en memoria.
     const historialDeMensajes = []
-
 
     io.on("connection", (clientSocket) => {
         console.log(`Nuevo cliente conectado => ${clientSocket.id}`)
 
+        //TODO:
         // Le envia al nuevo cliente conectado todos los mensajes mandados hasta el momento MIN56 ver como mejorarlo.
         for (const data of historialDeMensajes) {
             clientSocket.emit("message", data)
@@ -58,22 +58,17 @@ const main = async () => {
             clientSocket.broadcast.emit("user-joined-chat", username)
         })
 
-
         clientSocket.on("message", async (data) => {
-
             // Cada vez que se manda un mensaje se pushea la informacion al array
-
-            try{
+            try {
                 const { username, text, fechaFormateada } = data
                 await logsDao.addLog(fechaFormateada, username, text)
                 io.emit("message", data)
             }
-            catch(err) {
+            catch (err) {
                 console.log("Error al subir chats en DB => ", err)
             }
-
         })
     })
 }
-
 main()

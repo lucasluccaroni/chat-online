@@ -1,6 +1,6 @@
 const MongoStore = require("connect-mongo")
 const session = require("express-session")
-const defaultOptions = require("./defaultOptopns")
+const defaultOptions = require("./defaultOptions")
 const { dbName, mongoUri } = require("../config")
 
 

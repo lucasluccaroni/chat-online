@@ -3,7 +3,7 @@ const LogsModel = require("./logs.model")
 class LogsDAO {
 
     async addLog(date, user, message) {
-        try{
+        try {
             const newLog = {
                 date: date,
                 user: user,
@@ -12,7 +12,7 @@ class LogsDAO {
 
             await LogsModel.create(newLog)
         }
-        catch(err){
+        catch (err) {
             console.log("Error en Logs DAO añadiendo un log", err)
             return null
         }
