@@ -4,7 +4,11 @@
   "description": "Aplicacion de chat en vivo hecha desde el backend + websocket. Desplegada en Glitch",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app"
+  },
+  "engines": {
+    "node": "16.x"
   },
   "keywords": [],
   "author": "",
