@@ -1,6 +1,7 @@
 // Javascript desde el browser
 const socket = io()
 let username
+
 const messageLogs = document.getElementById("messageLogs")
 let chatBox = document.getElementById("chatBox")
 const sendButton = document.getElementById("sendButton")
@@ -13,6 +14,18 @@ const fechaFormateada = ahora.toLocaleString("es-AR", {
     hour: "2-digit",
     minute: "2-digit"
 })
+
+// Funcion para sanitizar el codigo
+const escapeHtml = (text)=> {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    }
+    return text.replace(/[&<>"']/g, function(m) { return map[m] })
+}
 
 // bloquear pantalla del usuario y pedirle username
 Swal.fire({
@@ -38,9 +51,6 @@ Swal.fire({
         username = result.value
         console.log(`Usuario ingresado: ${username}`)
 
-        //! validacion de username para bd?
-        //! guardar datos en localStorage para mantener la "sesion"?
-
         // notificamos al servidor que se conectó
         socket.emit("new-user-connected", username)
     }
@@ -51,6 +61,7 @@ Swal.fire({
 chatBox.addEventListener("keyup", e => {
     if (e.key === "Enter") {
         let text = chatBox.value
+        text = escapeHtml(text)
 
         if (text.trim().length > 0) {
             socket.emit("message", { username, text, fechaFormateada })
@@ -63,6 +74,7 @@ chatBox.addEventListener("keyup", e => {
 sendButton.addEventListener("click", e => {
     e.preventDefault()
     let text = chatBox.value
+    text = escapeHtml(text)
 
     if (text.trim().length > 0) {
         socket.emit("message", { username, text, fechaFormateada })
