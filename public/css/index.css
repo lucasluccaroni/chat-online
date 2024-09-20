@@ -1,6 +1,10 @@
 body {
-    background-image: url("/background-image.jpg");
+    background-image: url("/images/background-image.jpg");
     background-size: cover;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
 }
 
 #inputDiv{
@@ -16,11 +20,13 @@ body {
     overflow-x: hidden;
     white-space: normal;
     word-wrap: break-word;
+    margin-left: 10px;
 }
 
 p {
     font-size: large;
     font-family: 'Times New Roman', Times, serif;
+    margin-left: 5px;
 }
 
 #chatBox {
@@ -29,12 +35,14 @@ p {
     resize: none;
     box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
+    margin-left: 10px;
 }
 
 h1{
     font-family: 'Times New Roman', Times, serif;
     font-weight: bold;
     font-style: italic;
+    margin-left: 10px;
 }
 
 #sendButton{
@@ -42,4 +50,20 @@ h1{
     color: black;
     cursor: pointer;
     font-weight: 500;
+}
+
+footer{
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px; /* Ajusta el padding según tus necesidades */
+    box-sizing: border-box; /* Esto asegura que el padding no afecte el ancho total */
+    border-top: solid black 1px;
+    background-color: rgba(255, 255, 255, 0.42);
+    backdrop-filter: blur(2px); /* Aplica un desenfoque de 10 píxeles */
+    -webkit-backdrop-filter: blur(2px); /* Soporte para navegadores WebKit */
+}
+
+#githubLogo{
+    height: 20px;
+    width: 20px;
 }
