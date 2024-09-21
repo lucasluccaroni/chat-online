@@ -1,43 +1,43 @@
-//imports
+// Imports
 const express = require("express")
 const handlebars = require("express-handlebars")
 const mongoose = require("mongoose")
 const { Server } = require("socket.io")
 const { port, mongoUri, dbName } = require("./config")
 
-// instancia de class de la DB
+// Instancia de class de la DB
 const { LogsDAO } = require("./dao/logs.dao")
 const logsDao = new LogsDAO()
 
-// instancia del DTO
+// Instancia del DTO
 const { LogsDTO } = require("./dto/logs.dto")
 
-// app de express
+// App de express
 const app = express()
 
-// permitir el envio de informacion mediante formularios y JSON
+// Permitir el envio de informacion mediante formularios y JSON
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-// configuracion de handlebars
+// Configuracion de handlebars
 app.engine("handlebars", handlebars.engine())
 app.set("views", `${__dirname}/views`)
 app.set("view engine", "handlebars")
 
-// configuracion de carpeta "public"
+// Configuracion de carpeta "public"
 app.use(express.static(`${__dirname}/../public`))
 
-// rutas
+// Rutas
 const viewsRouter = require("./routes/views.router")
 app.use("/", viewsRouter)
 
 
 const main = async () => {
 
-    // conexion a la db
+    // Conexion a la db
     await mongoose.connect(mongoUri, { dbName })
 
-    // listener del puerto
+    // Listener del puerto
     const httpServer = app.listen(port, () => {
         console.log(`Servidor del chat prendido. puerto ${port}`)
     })
@@ -58,15 +58,15 @@ const main = async () => {
         clientSocket.emit("init-messages", messagesHistory)
 
         clientSocket.on("new-user-connected", (username) => {
-            //notificar a los demas usuarios que uno nuevo se conecto
+            // Notificar a los demas usuarios que uno nuevo se conecto
             clientSocket.broadcast.emit("user-joined-chat", username)
         })
 
         clientSocket.on("message", async (data) => {
             // Cada vez que se manda un mensaje se pushea la informacion al array
             try {
-                const { username, text, fechaFormateada } = data
-                await logsDao.addLog(fechaFormateada, username, text)
+                const { username, text, date } = data
+                await logsDao.addLog(date, username, text)
                 io.emit("message", data)
             }
             catch (err) {

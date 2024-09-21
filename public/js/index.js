@@ -6,17 +6,21 @@ const messageLogs = document.getElementById("messageLogs")
 let chatBox = document.getElementById("chatBox")
 const sendButton = document.getElementById("sendButton")
 
-let ahora = new Date()
-const fechaFormateada = ahora.toLocaleString("es-AR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit"
-})
+// Funcion que da la fecha y hora actual
+const now = () => {
+    let ahora = new Date()
+    const fechaFormateada = ahora.toLocaleString("es-AR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+    })
+    return fechaFormateada
+}
 
 // Funcion para sanitizar el codigo
-const escapeHtml = (text)=> {
+const escapeHtml = (text) => {
     const map = {
         '&': '&amp;',
         '<': '&lt;',
@@ -24,10 +28,10 @@ const escapeHtml = (text)=> {
         '"': '&quot;',
         "'": '&#039;'
     }
-    return text.replace(/[&<>"']/g, function(m) { return map[m] })
+    return text.replace(/[&<>"']/g, function (m) { return map[m] })
 }
 
-// bloquear pantalla del usuario y pedirle username
+// Bloquear pantalla del usuario y pedirle username
 Swal.fire({
     title: "¡Bienvenido! Identificate.",
     text: "Ingresa tu usuario para identificarte en el chat.",
@@ -51,45 +55,54 @@ Swal.fire({
         username = result.value
         console.log(`Usuario ingresado: ${username}`)
 
-        // notificamos al servidor que se conectó
+        // Notificamos al servidor que se conectó
         socket.emit("new-user-connected", username)
     }
 })
 
 
-// escuchar el evento "Enter" y enviar el mensaje al chat
+// Escuchar el evento "Enter" y enviar el mensaje al chat
 chatBox.addEventListener("keyup", e => {
     if (e.key === "Enter") {
+
         let text = chatBox.value
         text = escapeHtml(text)
 
+        let date = now()
+        console.log(date)
+
         if (text.trim().length > 0) {
-            socket.emit("message", { username, text, fechaFormateada })
+            socket.emit("message", { username, text, date })
             chatBox.value = ""
         }
     }
 })
 
-// escuchar el boton "enviar" y enviar el mensaje al chat
+// Escuchar el boton "enviar" y enviar el mensaje al chat
 sendButton.addEventListener("click", e => {
     e.preventDefault()
+
     let text = chatBox.value
     text = escapeHtml(text)
 
+    let date = now()
+    console.log(date)
+
+
     if (text.trim().length > 0) {
-        socket.emit("message", { username, text, fechaFormateada })
+        socket.emit("message", { username, text, date })
         chatBox.value = ""
     }
 })
 
 
-// escuchar los mensajes desde el servidor y mostrarlos
+// Escuchar los mensajes desde el servidor y mostrarlos
 socket.on("message", (data) => {
-    const { username, text, fechaFormateada } = data
-    messageLogs.innerHTML += `${fechaFormateada} -- ${username} : ${text} </br>`
+    const { username, text, date } = data
+    messageLogs.innerHTML += `${date} -- ${username} : ${text} </br>`
 })
 
-// escuchar el historial de mensajes e imprimirlo en pantalla
+// Escuchar el historial de mensajes e imprimirlo en pantalla
 socket.on("init-messages", (messagesHistory) => {
     messagesHistory.forEach(log => {
         const { date, user, message } = log
@@ -97,7 +110,7 @@ socket.on("init-messages", (messagesHistory) => {
     });
 })
 
-// envia un toast a todos los demas usuarios avisando que uno nuevo se unio al chat
+// Envia un toast a todos los demas usuarios avisando que uno nuevo se unio al chat
 socket.on("user-joined-chat", username => {
     const Toast = Swal.mixin({
         toast: true,
